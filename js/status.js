@@ -135,7 +135,7 @@ function listBugs() {
     function createLinks(target, locs) {
         target = $('#' + target);
         locs.forEach(function (locale) {
-            $('<a>').text(locale).attr('href', 'https://bugzil.la' + bugs[l2i[locale]].id).appendTo(target);
+            $('<a>').text(locale).attr('href', 'https://bugzil.la/' + bugs[l2i[locale]].id).appendTo(target);
             target.append(document.createTextNode(' '));
         });
     }
