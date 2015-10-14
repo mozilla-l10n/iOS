@@ -1,6 +1,6 @@
 /* global d3 */
 var bug = /bug=([0-9]+)/.exec(document.location.search)[1];
-var bugs, events, resolutions = {}, layers;
+var bugs, events, resolutions = {}, layers, hovers;
 
 $.getJSON('https://bugzilla.mozilla.org/rest/bug', 
     {
@@ -52,6 +52,7 @@ function showGraph() {
             resolutions[res] = 0;
         }
     }
+    hovers = [];
     layers = Object.keys(resolutions).map(function(res) {
         var cnt = 0;
         return {
@@ -59,6 +60,7 @@ function showGraph() {
             values: events.map(function(e) {
                 if (e.state === res) {
                     ++cnt;
+                    hovers.push({when: e.when, locale: e.locale, y: cnt});
                 }
                 return cnt;
             })
@@ -116,6 +118,15 @@ function showGraph() {
       .style("stroke", function(d) { return color(layer.label); })
       .attr("d", line);
     });
+    svg.selectAll(".hovers")
+        .data(hovers)
+        .enter()
+        .append("circle")
+        .attr("class", "hovers")
+        .attr("r", 5)
+        .attr("title", function(d) {return d.locale;})
+        .attr("cx", function(d) {return x(d.when)})
+        .attr("cy", function(d) {return y(d.y)});
 }
 
 function listBugs() {
